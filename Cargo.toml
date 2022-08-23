@@ -31,3 +31,6 @@ futures = "0.3" # for our async / await blocks
 http = "0.2.8"
 
 actix-web = "4"
+
+actix-web-lab = "0.16"
+actix-files = "0.6"

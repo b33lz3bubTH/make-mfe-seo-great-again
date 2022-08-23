@@ -1,11 +1,13 @@
 // https://api.nrix.in/product-api/ui-resolver/domain/nrix/products/<BaseCode>
 // QYv0jEfmJ_Rdvkn49BaVM_base00 -> Eg
+// ref : https://github.com/actix/examples/blob/master/https-tls/rustls/src/main.rs
+
 use serde::{Deserialize, Serialize};
-use axum::{
-    Json,
-    response::{Html, IntoResponse},
-    http::{StatusCode, Uri, header::{self, HeaderMap, HeaderName}},
-};
+use actix_web::{get, web, App, HttpServer, Responder};
+use actix_web::{http, middleware, HttpResponse ,http::header::ContentType};
+use std::{fs::File, io::BufReader};
+use actix_files::Files;
+use actix_web_lab::web::redirect;
 
 static HTML_SEGMENT_1: &'static str = r#"
         <!doctype html>
@@ -23,27 +25,30 @@ static HTML_SEGMENT_1: &'static str = r#"
         </head>
         
         <body>
+            <div id="loading" style="overflow: hidden;">
+            <div class="loading-container" style="text-align: center; width: 100vw; height: 100vh;"><img id="loading-image"
+                src="https://api.nrix.in/media/c7ea07db-d00a-46e0-a18d-c3b61835b24d.png/thumb" alt="Loading..." style="width: 300px; height: 300px; 
+                position: absolute; margin-top: -150px; 
+                margin-left: -150px;
+                top: 50%;
+                left: 50%;" /></div>
+        </div>
+        <div id="app"></div>
+        <script>$(window).on('load', function () {
+            setTimeout(removeLoader, 2000);
+          });
+          function removeLoader() {
+            $("\#loading").fadeOut(500, function () {
+              $("\#loading").remove();
+            });
+          }
+          // enable for deployment
+          // console.log = () => {};</script>
+        </body>
     "#;
 static HTML_SEGMENT_2: &'static str = r#"
-    <div id="loading" style="overflow: hidden;">
-    <div class="loading-container" style="text-align: center; width: 100vw; height: 100vh;"><img id="loading-image"
-        src="https://api.nrix.in/media/c7ea07db-d00a-46e0-a18d-c3b61835b24d.png/thumb" alt="Loading..." style="width: 300px; height: 300px; 
-        position: absolute; margin-top: -150px; 
-        margin-left: -150px;
-        top: 50%;
-        left: 50%;" /></div>
-</div>
-<div id="app"></div>
-<script>$(window).on('load', function () {
-    setTimeout(removeLoader, 2000);
-    });
-    function removeLoader() {
-    $("\#loading").fadeOut(500, function () {
-        $("\#loading").remove();
-    });
-    }
-</body>
-</html>
+    
+    </html>
 "#;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -66,23 +71,15 @@ struct ProductData {
     data: APIData
 }
 
-
-
-
-
 #[tokio::main]
-pub async fn main() {
-     // Build our application by creating our router.
-    let app = axum::Router::new()
-        .route("/products/:pid",
-            axum::routing::get(get_product)
-        );
-
-    // Run our application as a hyper server on http://localhost:3000.
-    axum::Server::bind(&"0.0.0.0:3001".parse().unwrap())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+pub async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new().service(get_product).service(Files::new("/", "dist"))
+    })
+    .bind(("127.0.0.1", 3001))?
+    .run()
+    .await
+   
 }
 
 fn get_default() -> String {
@@ -93,12 +90,8 @@ fn get_seo_html(result: String) -> String {
     let html = HTML_SEGMENT_1.to_owned() + &result.to_owned() + &HTML_SEGMENT_2.to_owned().to_string();
     return html.to_string();
 }
-
-async fn get_product(axum::extract::Path(id):axum::extract::Path<String>) -> Html<&'static str> {
-    // Headers(vec![
-    //     (HeaderName::from_static("Content-Type"), HeaderValue::from_static("text/html; charset=utf-8")),
-    // ]);
-
+#[get("/products/{id}")]
+async fn get_product(id: web::Path<String>) -> HttpResponse {
     let response = reqwest::get("https://api.nrix.in/product-api/ui-resolver/domain/nrix/products/".to_string() + &id)
     .await
     .unwrap();
@@ -112,17 +105,23 @@ async fn get_product(axum::extract::Path(id):axum::extract::Path<String>) -> Htm
                 },
                 Err(_) => {
                     println!("Hm, the response didn't match the shape we expected.");
-                    // return Html(&get_default());
+                    return HttpResponse::Ok().content_type(ContentType::html()).body(
+                        get_default()
+                    )
                 },
             };
         }
         reqwest::StatusCode::UNAUTHORIZED => {
             println!("Need to grab a new token");
-            // return Html(&get_default());
+            return HttpResponse::Ok().content_type(ContentType::html()).body(
+                get_default()
+            )
         }
         other => {
-            // panic!("Uh oh! Something unexpected happened: {:?}", other);
-            // return Html(&get_default());
+            return HttpResponse::Ok().content_type(ContentType::html()).body(
+                get_default()
+            )
+
         }
     };
 
@@ -141,7 +140,10 @@ async fn get_product(axum::extract::Path(id):axum::extract::Path<String>) -> Htm
     println!("result: {:?}", result);
 
     let text_html = get_seo_html(result);
-    return Html(text_html.to_string());
+    return HttpResponse::Ok().content_type(ContentType::html()).body(
+        text_html.to_string()
+    )
+    
 }
 
 /*
