@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 use actix_web::{get, web, App, HttpServer, Responder};
 use actix_web::{http, middleware, HttpResponse ,http::header::ContentType};
 use std::{fs::File, io::BufReader};
-use actix_files::Files;
+use actix_files::{Files};
+use actix_web::dev::{ServiceResponse, ServiceRequest};
 use actix_web_lab::web::redirect;
 
 static HTML_SEGMENT_1: &'static str = r#"
@@ -74,7 +75,15 @@ struct ProductData {
 #[tokio::main]
 pub async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
-        App::new().service(get_product).service(Files::new("/", "dist"))
+        App::new().service(get_product).service(Files::new("/", "dist")
+        .index_file("index.html")
+        .default_handler(|req: ServiceRequest| {
+            let (http_req, _payload) = req.into_parts();
+            async {
+                let response = actix_files::NamedFile::open("./dist/index.html")?.into_response(&http_req);
+                Ok(ServiceResponse::new(http_req, response))
+            }
+        }))
     })
     .bind(("127.0.0.1", 3001))?
     .run()
@@ -137,7 +146,7 @@ async fn get_product(id: web::Path<String>) -> HttpResponse {
         product_data.data.description,
         product_data.data.sellingPrice, &id);
 
-    println!("result: {:?}", result);
+    // println!("result: {:?}", result);
 
     let text_html = get_seo_html(result);
     return HttpResponse::Ok().content_type(ContentType::html()).body(
@@ -145,41 +154,3 @@ async fn get_product(id: web::Path<String>) -> HttpResponse {
     )
     
 }
-
-/*
-
-GET https://shop.nrix.in/products/yHhsDXv_egj9VGw84PAtt_base00
-
-
-SPA: <html>
-
-    <div style="none" id="_SEO_SHIT">
-        <p>Product Name: <span> </span></p>
-        <p>Product Description: <span> </span></p>
-        <p>Product Price: <span> </span></p>
-        <p>Product ID: <span> </span></p>
-
-    <div>
-
-    .....
-    .....
-    ....
-    
-    <script src="main.js" />
-</html>
-
-
-*/
-
-
-
-/*
-<script>
-        window.onload = () => {
-            setTimeout(()=>{
-                document.querySelector("_SEO_SHIT").style.display = "none";
-            }, 2000)
-        }
-        
-    </script>
-*/
