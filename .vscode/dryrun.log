@@ -2,5 +2,5 @@ make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/sourav/Documents/make-mfe-seo-greatAgain'
 make: Leaving directory '/home/sourav/Documents/make-mfe-seo-greatAgain'
  
-make: *** No targets.  Stop.
+make: *** No targets specified and no makefile found.  Stop.
 
