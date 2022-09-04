@@ -43,8 +43,16 @@ func FileServerWithCustom404(fs http.FileSystem) http.Handler {
 }
 
 func main() {
+    distFolder := func (relativeDoc ...string) string {
+        absPath := "./../dist/"
+        if len(relativeDoc) > 0 {
+            return absPath + relativeDoc[0]
+        }
+        return absPath
+    }
+
     fmt.Println("*** Started The Frontend SPA Server")
-    html_, err := os.ReadFile("./../dist/index.html")
+    html_, err := os.ReadFile(distFolder("index.html"))
     check(err)
     var htmlDom string = string(html_)
     var index int = strings.Index(htmlDom, "<body>")
@@ -58,7 +66,7 @@ func main() {
 
     r := mux.NewRouter()
     r.HandleFunc("/products/{id}", ProductRenderer)
-    r.PathPrefix("/").Handler(FileServerWithCustom404(http.Dir("./../dist/")))
+    r.PathPrefix("/").Handler(FileServerWithCustom404(http.Dir(distFolder())))
     http.ListenAndServe("0.0.0.0:3001", r)
 }
 
@@ -137,7 +145,7 @@ func ProductRenderer(w http.ResponseWriter, r *http.Request) {
     fmt.Println("product name: ", product.Data.Name)
 
     rawHtml := []byte(`
-        <div id="_SEO_SHIT">
+        <div id="_SEO_SHIT" style="display: none">
             <p>Product Name: <span> %s </span></p>
             <p>Product Description: <span> %s </span></p>
             <p>Product Price: <span> %d </span></p>
