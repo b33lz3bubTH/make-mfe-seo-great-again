@@ -18,15 +18,18 @@ var HTML_SEG_2 string = "";
 
 func check(e error) {
     if e != nil {
+        fmt.Println("There is an Error: ", e)
         panic(e)
     }
 }
+
 func NotFound(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html; charset=UTF-8")
     w.Write([]byte(GetDefaultHtml()))
 }
 
 func FileServerWithCustom404(fs http.FileSystem) http.Handler {
+    // just send the index.html page for not found routes
 	fsh := http.FileServer(fs)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         fmt.Println("r.URL.Path: ", r.URL.Path)
