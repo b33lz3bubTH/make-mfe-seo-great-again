@@ -77,16 +77,7 @@ func ProductRenderer(w http.ResponseWriter, r *http.Request) {
     var product ProductData
     json.Unmarshal(responseData, &product)
 
-    // fmt.Println("product name: ", product.Data.Name)
-
-    rawHtml := []byte(`
-        <article id="seo_block" style="display: none">
-            <h2>Product Name: <span> %s </span></h2>
-            <p>Product Description: <span> %s </span></p>
-            <p>Product Price: <span> Rs. %d </span></p>
-            <p>Product ID: <span> %s </span></p>
-        </article>
-    `)
+    rawHtml := []byte(utils.ProductBodyHtml)
     s := fmt.Sprintf(string(rawHtml), product.Data.Name, product.Data.Description,product.Data.SellingPrice, id)
 
     

@@ -16,3 +16,13 @@ func GetDefaultHtml() string{
 func SeoHtml(html string) string{
 	return HTML_SEG_1 + html + HTML_SEG_2
 }
+
+
+var ProductBodyHtml = `
+        <article id="seo_block" style="display: none">
+            <h2>Product Name: <span> %s </span></h2>
+            <p>Product Description: <span> %s </span></p>
+            <p>Product Price: <span> Rs. %d </span></p>
+            <p>Product ID: <span> %s </span></p>
+        </article>
+`

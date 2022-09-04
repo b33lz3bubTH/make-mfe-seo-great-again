@@ -66,6 +66,7 @@ func main() {
 
     r := mux.NewRouter()
     r.HandleFunc("/products/{id}", routes.ProductRenderer)
+    r.HandleFunc("/search", routes.SearchProductHandler)
     r.PathPrefix("/").Handler(FileServerWithCustom404(http.Dir(distFolder())))
     http.ListenAndServe("0.0.0.0:3001", r)
 }

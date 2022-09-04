@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Sep  4 09:37:44 2022
+# Make data base, printed on Sun Sep  4 16:47:20 2022
 
 # Variables
 
@@ -23,7 +23,7 @@ PNPM_HOME = /home/sourav/.local/share/pnpm
 # environment
 GTK_RC_FILES = /etc/gtk/gtkrc:/home/sourav/.gtkrc:/home/sourav/.config/gtkrc
 # environment
-KONSOLE_DBUS_SERVICE = :1.242
+KONSOLE_DBUS_SERVICE = :1.1560
 # environment
 LC_NAME = en_IN
 # environment
@@ -31,7 +31,7 @@ LC_NUMERIC = en_IN
 # environment
 VSCODE_CWD = /home/sourav/Documents/make-mfe-seo-greatAgain
 # environment
-WINDOWID = 96468999
+WINDOWID = 109051911
 # environment
 LC_ADDRESS = en_IN
 # default
@@ -109,7 +109,7 @@ MAKEFILE_LIST :=
 # environment
 ZSH = /home/sourav/.oh-my-zsh
 # environment
-VSCODE_PID = 5750
+VSCODE_PID = 35935
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -245,7 +245,7 @@ VSCODE_CLI = 1
 # environment
 ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
-SHELL_SESSION_ID = 9f80c6e52d7348f1b141131a687c50ce
+SHELL_SESSION_ID = 0013f596e3874582884038bd391149a6
 # environment
 KDE_SESSION_VERSION = 5
 # default
@@ -263,7 +263,7 @@ LC_IDENTIFICATION = en_IN
 
 # Directories
 
-# . (device 66306, inode 8520593): 8 files, no impossibilities.
+# . (device 66306, inode 8663942): 8 files, no impossibilities.
 
 # 8 files, no impossibilities in 1 directories.
 
@@ -276,7 +276,6 @@ LC_IDENTIFICATION = en_IN
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
 #  File does not exist.
 #  File has been updated.
 #  Failed to be updated.
@@ -292,6 +291,7 @@ all:
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
+ 
 #  File has not been updated.
 
 # Not a target:
@@ -322,6 +322,6 @@ GNUmakefile:
 # strcache performance: lookups = 19 / hit rate = 15%
 # hash-table stats:
 # Load=16/8192=0%, Rehash=0, Collisions=0/19=0%
-# Finished Make data base on Sun Sep  4 09:37:44 2022
+# Finished Make data base on Sun Sep  4 16:47:20 2022
 
  
