@@ -1,6 +1,5 @@
 
-# Go Version is ment to be used.
-# Rust Version is static
+# Go Version.
 
 
 > Demo Video
