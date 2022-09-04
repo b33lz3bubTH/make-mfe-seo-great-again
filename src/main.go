@@ -55,6 +55,7 @@ func main() {
     check(err)
     var htmlDom string = string(html_)
     var index int = strings.Index(htmlDom, "<body>")
+    utils.FULL_HTML = htmlDom
     if index != -1{
         utils.HTML_SEG_1 = htmlDom[0:index+6]
         utils.HTML_SEG_2 = htmlDom[index+6:len(htmlDom)]

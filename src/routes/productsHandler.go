@@ -5,7 +5,6 @@ import "seoCore/utils"
 import (
     "net/http"
 	"fmt"
-	"os"
 	"encoding/json"
     "io/ioutil"
     "log"
@@ -60,13 +59,13 @@ func ProductRenderer(w http.ResponseWriter, r *http.Request) {
     id, ok := vars["id"]
     if !ok {
         fmt.Println("id is missing in parameters")
+		w.Write([]byte(utils.GetDefaultHtml()))
     }
-    fmt.Println(`id := `, id)
     response, err := http.Get("https://api.nrix.in/product-api/ui-resolver/domain/nrix/products/" + id)
 
     if err != nil {
         fmt.Print(err.Error())
-        os.Exit(1)
+        // os.Exit(1)
     }
 
     responseData, err := ioutil.ReadAll(response.Body)
@@ -78,15 +77,15 @@ func ProductRenderer(w http.ResponseWriter, r *http.Request) {
     var product ProductData
     json.Unmarshal(responseData, &product)
 
-    fmt.Println("product name: ", product.Data.Name)
+    // fmt.Println("product name: ", product.Data.Name)
 
     rawHtml := []byte(`
-        <div id="_SEO_SHIT" style="display: none">
-            <p>Product Name: <span> %s </span></p>
+        <article id="seo_block" style="display: none">
+            <h2>Product Name: <span> %s </span></h2>
             <p>Product Description: <span> %s </span></p>
-            <p>Product Price: <span> %d </span></p>
-            <p>Product ID: <span>%s</span></p>
-        </div>
+            <p>Product Price: <span> Rs. %d </span></p>
+            <p>Product ID: <span> %s </span></p>
+        </article>
     `)
     s := fmt.Sprintf(string(rawHtml), product.Data.Name, product.Data.Description,product.Data.SellingPrice, id)
 
