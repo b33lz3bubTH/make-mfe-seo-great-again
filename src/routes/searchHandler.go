@@ -82,10 +82,8 @@ func SearchProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	rawHtml := ""
 
-	productList := &productListApiResponse.Data.Products
-
-	for i := 0; i < len(*productList); i++ {
-		rawHtml += fmt.Sprintf(string(utils.ProductBodyHtml), (*productList)[i].Name, (*productList)[i].Description,(*productList)[i].SellingPrice, (*productList)[i].BaseCode)
+	for _, product := range productListApiResponse.Data.Products {
+		rawHtml += fmt.Sprintf(string(utils.ProductBodyHtml), product.Name, product.Description, product.SellingPrice, product.BaseCode)
 	}
 
 	productHtml := []byte(`
